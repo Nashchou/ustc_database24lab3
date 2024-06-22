@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>教师教学科研登记系统</title>
+  <link href="https://cdn.bootcss.com/bootstrap/4.1.0/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #f7f9fc;
+    }
+
+    .fdb-block {
+      padding: 60px 0;
+      color: #444;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .img-fluid {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .img-fluid:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .fdb-box {
+      background-color: #fff;
+      color: #444;
+      padding: 60px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s;
+    }
+
+    .fdb-box:hover {
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-custom {
+      background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .btn-custom:hover {
+      background: linear-gradient(45deg, #2575fc 0%, #6a11cb 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      font-size: 2.75rem;
+      margin-bottom: 1em;
+      font-weight: 700;
+      color: #333;
+      position: relative;
+      display: inline-block;
+      padding-bottom: 0.5rem;
+    }
+
+    h1::after {
+      content: "";
+      display: block;
+      width: 50%;
+      height: 3px;
+      background: #6a11cb;
+      margin: 0.5rem auto;
+      border-radius: 2px;
+    }
+
+    .mt-4 {
+      margin-top: 1.5rem !important;
+    }
+
+    @media (min-width: 768px) {
+      .mt-md-0 {
+        margin-top: 0 !important;
+      }
+    }
+
+    .container {
+      max-width: 1200px;
+    }
+
+    .fade-in {
+      animation: fadeIn 2s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <section class="fdb-block fade-in">
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+          <h1>教师教学科研登记系统</h1>
+        </div>
+      </div>
+      <div class="row pt-4">
+        <div class="col-12 col-md-4 text-center">
+          <img alt="Paper Registration" src="https://via.placeholder.com/300x200?text=论文登记" class="img-fluid mb-4" />
+          <form action="/paper/search/">
+            <button type="submit" class="btn btn-custom">发表论文</button>
+          </form>
+        </div>
+        <div class="col-12 col-md-4 text-center">
+          <img alt="Project Registration" src="https://via.placeholder.com/300x200?text=项目登记" class="img-fluid mb-4" />
+          <form action="/project/search/">
+            <button type="submit" class="btn btn-custom">承担项目</button>
+          </form>
+        </div>
+        <div class="col-12 col-md-4 text-center mt-4 mt-md-0">
+          <img alt="Statistics" src="https://via.placeholder.com/300x200?text=统计查询" class="img-fluid mb-4" />
+          <form action="/statistic/">
+            <button type="submit" class="btn btn-custom">查询统计</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+
+</html>

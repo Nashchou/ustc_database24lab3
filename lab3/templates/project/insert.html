@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>新建项目</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDzwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="container">
+    <br><br>
+    <h1>新建项目</h1><br>
+    <form action="" method="post" id="form1">
+      {% csrf_token %}
+      <h3>项目信息</h3>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-6">
+            <label for="project_number">项目编号</label>
+            <input type="text" name="project_number" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label for="project_name">项目名称</label>
+            <input type="text" name="project_name" class="form-control">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="project_source">项目来源</label>
+            <input type="text" name="project_source" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label for="project_type">项目类型</label>
+            <select name="project_type" class="form-control">
+              <option value="1">国家级项目</option>
+              <option value="2">省部级项目</option>
+              <option value="3">市厅级项目</option>
+              <option value="4">企业合作项目</option>
+              <option value="5">其它类型项目</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="total_budget">总预算</label>
+            <input type="text" name="total_budget" class="form-control" oninput="this.value=this.value.replace(/[^\d]/g,'')">
+          </div>
+          <div class="col-md-3">
+            <label for="start_year">开始日期</label>
+            <input type="date" name="start_year" class="form-control">
+          </div>
+          <div class="col-md-3">
+            <label for="end_year">结束日期</label>
+            <input type="date" name="end_year" class="form-control">
+          </div>
+        </div>
+      </div>
+      <br>
+      <h3>参与老师信息</h3>
+      <p>当前项目已有老师数量：<span id="teacher-count">0</span></p>
+      <input type="hidden" name="teacher_index_list" id="teacher_index_list" value="">
+      <div id="teachers"></div>
+      <button type="button" class="btn btn-secondary" id="add-teacher">添加老师</button>
+      <br><br>
+      <div class="col-md-3 offset-md-9">
+        <button type="button" id="btn-submit" class="btn btn-primary">提交</button>
+      </div>
+    </form> 
+  </div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">提交结果</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    let teacherIndexList = [];
+
+    function updateTeacherCount() {
+      const count = teacherIndexList.length;
+      $('#teacher-count').text(count);
+      $('#teacher_index_list').val(JSON.stringify(teacherIndexList));
+    }
+
+    function addTeacher(index) {
+      var teacherForm = `<div class="form-group teacher" data-index="${index}">
+          <div class="row">
+              <div class="col-md-4">
+                  <label for="teacher_id_${index}">工号</label>
+                  <input type="text" name="teacher_id_${index}" class="form-control teacher-id">
+              </div>
+              <div class="col-md-4">
+                  <label for="teacher_name_${index}">姓名</label>
+                  <input type="text" name="teacher_name_${index}" class="form-control teacher-name" readonly>
+              </div>
+              <div class="col-md-2">
+                  <label for="teacher_position_${index}">排位</label>
+                  <input type="text" name="teacher_position_${index}" class="form-control teacher-position" >
+              </div>
+              <div class="col-md-2">
+                  <label for="teacher_budget_${index}">经费</label>
+                  <input type="text" name="teacher_budget_${index}" class="form-control teacher-budget" >
+              </div>
+              <div class="col-md-2">
+                  <button type="button" class="btn btn-danger btn-delete-teacher" style="margin-top: 30px;">删除</button>
+              </div>
+          </div>
+          <br>
+      </div>`;
+      $('#teachers').append(teacherForm);
+      teacherIndexList.push(index);
+      updateTeacherCount();
+    }
+
+    function validateTeacherPositions() {
+      const positions = [];
+      let isValid = true;
+
+      $('input[name^="teacher_position"]').each(function() {
+        const position = $(this).val();
+        if (positions.includes(position)) {
+          isValid = false;
+          alert('老师的排位不能相同！');
+          return false;
+        }
+        positions.push(position);
+      });
+
+      return isValid;
+    }
+
+    $('#btn-submit').click(function(){
+      if (!validateTeacherPositions()) {
+        return false;
+      }
+
+      var totalBudget = parseFloat($('input[name="total_budget"]').val());
+      var totalTeacherBudget = 0;
+      var flag = true;
+
+
+      // 判断开始日期是否小于结束日期
+      var startYear = $('input[name="start_year"]').val();
+      var endYear = $('input[name="end_year"]').val();
+      if(startYear > endYear) {
+        alert('开始日期不能大于结束日期！');
+        flag = false;
+      }
+      
+      $('input[name^="teacher_budget"]').each(function() {
+        totalTeacherBudget += parseFloat($(this).val()) || 0;
+        // 如果小于0，提示错误
+        if(parseFloat($(this).val())<0) {
+          alert('经费不能小于0!');
+          flag = false;
+        }
+        // 如果不是数字，提示错误
+        if(isNaN(parseFloat($(this).val()))) {
+          alert('经费必须是数字！');
+          flag = false;
+        }
+      });
+
+      if(!flag) {
+        return false;
+      }
+      
+      if (totalBudget !== totalTeacherBudget) {
+        alert('所有老师的经费总和必须等于总预算！');
+        return false;
+      }
+      
+      $.ajax({
+        type: 'POST',
+        url: '',
+        data: $('#form1').serialize(),
+        success: function (result) {
+          $('#modal-body').text(result);
+          $('#modelId').modal('show');
+        },
+      });
+    });
+
+    $('#add-teacher').click(function(){
+      const newIndex = teacherIndexList.length ? Math.max(...teacherIndexList) + 1 : 0;
+      addTeacher(newIndex);
+    });
+
+    $(document).on('blur', '.teacher-id', function() {
+      var teacherId = $(this).val();
+      var $row = $(this).closest('.row');
+      var $nameField = $row.find('.teacher-name');
+
+      if (teacherId) {
+        $.ajax({
+          url: '{% url "get_teacher_name" %}',
+          type: 'GET',
+          data: { job_number: teacherId },
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              $nameField.val(response.name);
+            } else {
+              alert('未找到该工号对应的老师');
+              $nameField.val('');
+            }
+          }
+        });
+      } else {
+        $nameField.val('');
+      }
+    });
+
+    $(document).on('click', '.btn-delete-teacher', function() {
+        var $teacherForm = $(this).closest('.teacher');
+        var index = $teacherForm.data('index');
+        teacherIndexList = teacherIndexList.filter(i => i !== index);
+        $teacherForm.remove();
+        updateTeacherCount();
+    });
+
+    $(document).ready(function() {
+      addTeacher(0); // 初始化添加一个老师表单
+      updateTeacherCount();
+    });
+  </script>
+
+</body>
+</html>
+ 
